@@ -5,7 +5,7 @@
 # Shapely is licensed under the BSD 3-clause "New" or "Revised" License
 
 """
-This module pulls together _trace.cpp, proj.4, and GEOS.
+This module pulls together Shapely and GEOS for faster geometry conversion.
 """
 
 from libc.stdint cimport uintptr_t as ptr
@@ -19,28 +19,6 @@ cdef extern from "geos_c.h":
 
 import shapely.geometry as sgeom
 from shapely.geos import lgeos
-
-
-cdef extern from "proj_api.h":
-    ctypedef void *projPJ
-
-
-cdef extern from "_trace.h":
-    cdef cppclass Interpolator:
-        pass
-
-    cdef cppclass SphericalInterpolator:
-        SphericalInterpolator(projPJ src_proj, projPJ dest_proj)
-
-    cdef cppclass CartesianInterpolator:
-        CartesianInterpolator(projPJ src_proj, projPJ dest_proj)
-
-    # XXX Rename? It handles LinearRings too.
-    GEOSGeometry *_project_line_string(GEOSContextHandle_t handle,
-                                       GEOSGeometry *g_line_string,
-                                       Interpolator *interpolator,
-                                       GEOSGeometry *g_domain,
-                                       double threshold)
 
 
 cdef GEOSContextHandle_t get_geos_context_handle():
